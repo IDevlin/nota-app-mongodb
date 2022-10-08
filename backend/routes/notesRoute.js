@@ -4,6 +4,7 @@ import expressAsyncHandler from 'express-async-handler';
 
 const notesRouter = express.Router();
 
+//Add New Note
 notesRouter.post(
   '/add',
   expressAsyncHandler(async (req, res) => {
@@ -28,29 +29,26 @@ notesRouter.get(
     res.send({ notes });
   })
 );
-//delete
-notesRouter.delete(
-  '/delete/:id',
-  expressAsyncHandler(async (req, res) => {
-    const note = await Note.findById(req.params.id);
-    if (!note) {
-      res.status(404).send({ message: 'Note Not Found' });
-    }
-    await note.deleteOne();
-    const notes = await Note.find();
-    res.send({ message: 'Note deleted', notes });
-  })
-);
 
-//Edit
+//Edit Note
 notesRouter.put(
   '/edit-note/:id',
   expressAsyncHandler(async (req, res) => {
-    const {title, description}=req.body
-    const note = await Note.findByIdAndUpdate(req.params.id, {title, description});
-    const editedNote = await Note.findById(req.params.id)
-    res.send({ editedNote });
+    const { title, description } = req.body;
+    const note = await Note.findByIdAndUpdate(req.params.id, {
+      title,
+      description,
+    });
+    res.send({ message: 'Note updated' });
   })
 );
 
+//Delete Note
+notesRouter.delete(
+  '/delete/:id',
+  expressAsyncHandler(async(req, res) => {
+   const note = await Note.findByIdAndDelete(req.params.id);
+   res.send({ message: 'Note deleted'});
+  })
+);
 export default notesRouter;
